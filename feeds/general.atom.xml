@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>The Computational Science Survival Guide</title><link href="http://cvarin.github.io/CSci-Survival-Guide/" rel="alternate"></link><link href="http://cvarin.github.io/CSci-Survival-Guide/feeds/general.atom.xml" rel="self"></link><id>http://cvarin.github.io/CSci-Survival-Guide/</id><updated>2014-11-13T00:00:00-05:00</updated><entry><title>Introduction</title><link href="http://cvarin.github.io/CSci-Survival-Guide/intro.html" rel="alternate"></link><updated>2014-11-13T00:00:00-05:00</updated><author><name>Charles Varin</name></author><id>tag:cvarin.github.io/CSci-Survival-Guide,2014-11-13:intro.html</id><summary type="html">&lt;p&gt;If you end up here, you might be doing a master or a Ph.D. that involves computer simulations 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>The Computational Science Survival Guide</title><link href="http://cvarin.github.io/CSci-Survival-Guide/" rel="alternate"></link><link href="http://cvarin.github.io/CSci-Survival-Guide/feeds/general.atom.xml" rel="self"></link><id>http://cvarin.github.io/CSci-Survival-Guide/</id><updated>2014-11-13T00:00:00-05:00</updated><entry><title>Introduction</title><link href="http://cvarin.github.io/CSci-Survival-Guide/intro.html" rel="alternate"></link><updated>2014-11-13T00:00:00-05:00</updated><author><name>Charles Varin</name></author><id>tag:cvarin.github.io/CSci-Survival-Guide,2014-11-13:intro.html</id><summary type="html">&lt;p&gt;If you end up here, you are probably involved with computer simulations 
 of some sort. If you are about to spend hours in front of a computer, why not making it
 enjoyable? Why not getting rid of expensive, overkill, licensed software you do not need? 
 You will see, working with open source software makes it nice, whith the feeling that you are in control 
@@ -8,4 +8,4 @@ of what you are doing.&lt;/p&gt;
 always rely on. Of course, there are situations where more complex approaches are needed.
 But when in doubt, you still have these simple codes you know and understand very well,
 to compare and make sure everything is right.&lt;/p&gt;
-&lt;p&gt;I hope you will find some of the upcoming articles interesting!&lt;/p&gt;</summary><category term="introduction"></category></entry></feed>
+&lt;p&gt;I hope you will find the upcoming articles interesting and useful!&lt;/p&gt;</summary><category term="introduction"></category></entry></feed>
