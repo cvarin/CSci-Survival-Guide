@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>The fantastic 4 | The Computational Science Survival Guide </title>
+  <meta name="author" content="Charles Varin">
+
+
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="/favicon.png" rel="icon">
+  <link href="/theme/css/main.css" media="screen, projection"
+        rel="stylesheet" type="text/css">
+  <script src="/theme/js/modernizr-2.0.js"></script>
+  <script src="/theme/js/ender.js"></script>
+  <script src="/theme/js/octopress.js" type="text/javascript"></script>
+
+  <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic"
+        rel="stylesheet" type="text/css">
+  <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic"
+        rel="stylesheet" type="text/css">
+</head>
+
+<body>
+  <header role="banner"><hgroup>
+  <h1><a href="/">The Computational Science Survival Guide</a></h1>
+    <h2>Free science with open source software</h2>
+</hgroup></header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+</ul>
+
+
+
+<ul class="main-navigation">
+    <li><a href="/archives.html">articles</a></li>
+    <li><a href="/pages/tools.html">tools</a></li>
+    <li><a href="/pages/infos.html">infos</a></li>
+
+</ul>
+
+<!-- http://www.w3schools.com/css/css_image_gallery.asp -->
+<ul class="img">
+     <a target="_blank" href="https://github.com/cvarin">
+          <img src="../images/github.png" alt="ka" height='34'>
+     </a>
+     <a target="_blank" href="http://www.mendeley.com/profiles/charles-varin/">
+          <img src="../images/mendeley.jpeg" alt="ka" height='34'>
+     </a>
+     <a target="_blank" href="http://ca.linkedin.com/pub/charles-varin/2a/175/390">
+          <img src="../images/linkedin.png" alt="ka" height='34'>
+     </a>
+     <a target="_blank" href="http://www.researchgate.net/profile/Charles_Varin">
+          <img src="../images/research_gate.jpeg" alt="ka" height='34'>
+     </a>
+     <a target="_blank" href="http://scholar.google.com/citations?user=yAdYdUAAAAAJ&hl=en">
+          <img src="../images/GoogleScholar_2.png" alt="ka" height='34'>
+     </a>
+</ul></nav>
+  <div id="main">
+    <div id="content">
+<div>
+  <article role="article">
+    <header>
+      <h1 class="entry-title">The fantastic 4</h1>
+    </header>
+    <p>It sounds a bit fabulous, but so much can be done with only these four :</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ <a href="https://www.python.org/">Python</a> &nbsp; /
+&nbsp; Prototyping, post-processing, and data visualization<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ <a href="http://en.wikipedia.org/wiki/C_%28programming_language%29">C/C++</a> &nbsp; /
+&nbsp; Low level programming and high performance computing <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="http://git-scm.com/">Git</a> &nbsp; /
+&nbsp; Code management and development notebook <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="http://en.wikipedia.org/wiki/Secure_Shell">SSH</a> &nbsp; / 
+&nbsp; Secure access to remote computers and data transfer<br/></p>
+<p>What is really fantastic is that you can do cutting-edge science with <a href="http://opensource.org/">open source</a>
+software that can be freely used, changed, and shared by anyone. </p>
+<!--I fell I'm repeating myself all the time with students and colleagues. I decided to 
+create this website to share my personnal experience in doing science with open source software. In hope 
+some of the tricks I give here will help you too!-->
+
+<h2>Python</h2>
+<p><a href="https://www.python.org/">Python</a> provides a complete programming solution for research and scientific coding. 
+It is open source, scalable, well-supported, and runs natively on the major platforms (Windows, OS X, and Linux). 
+It is similar to <a href="http://www.mathworks.com/">Matlab</a>: not as good for certain aspects, 
+better for some others <a href="http://www.stat.washington.edu/~hoytak/blog/whypython.html">[1]</a>. With libraries like <a href="http://www.scipy.org/">SciPy</a> and <a href="http://matplotlib.org/">Matplotlib</a>, 
+there is not much you can't do with it. There are also specialized software - like 
+<a href="http://www.pymol.org/">Pymol</a>, 
+<a href="http://docs.enthought.com/mayavi/mayavi/">Mayavi</a>, 
+<a href="https://wci.llnl.gov/simulation/computer-codes/visit">VisIt</a>,
+and <a href="http://www.paraview.org/">ParaView</a> - that offer application programming interfaces (API) for control 
+within Python scripts.
+Why not giving a try to the <a href="http://qutip.org/">Quantum Toolbox</a>? Even more numeric and scientific 
+packages <a href="https://wiki.python.org/moin/NumericAndScientific">here</a>, help yourself!</p>
+<p>[1] <a href="http://www.stat.washington.edu/~hoytak/blog/whypython.html">10 Reasons Python Rocks for Research (And a Few Reasons it Doesn’t)</a></p>
+<h2>C/C++</h2>
+<p><a href="http://en.wikipedia.org/wiki/C_%28programming_language%29">C</a> is one of the oldest and most popular programming languages. It is powerful, 
+fast, and available on all platforms. The C syntax and style inspired the creators of other programming languages like Perl, Java, and JavaScript. 
+Learning C as a first language makes learning other languages easier <a href="https://www.udemy.com/blog/best-programming-language/">[2]</a>. 
+<a href="http://en.wikipedia.org/wiki/C%2B%2B">C++</a> is an object oriented version of C. It offers more flexibility with features like 
+function overloading, data abstraction, and templates. </p>
+<p>C/C++ is the most widely used computer language. With it, it is possible to build stable and efficient programs to solve the most demanding numerical problems. 
+And there is a vast world of free and open source software, resources, and libraries that can be hacked, tweaked, and adapted to almost every need.</p>
+<p>[2] <a href="https://www.udemy.com/blog/best-programming-language/">Top 10 Programming Languages to Learn in 2014</a></p>
+<h2>Git</h2>
+<p>When it comes to code development, using a 
+<a href="http://git-scm.com/book/en/Getting-Started-About-Version-Control">version control system</a> (VCS) is
+an advantage. Essentially, it keeps track of the evolution of the piece of software you are working on so
+hard. It both acts as a time machine and a backup system. There exists several VCS options, but <a href="http://git-scm.com/">Git</a> 
+stands out from the crowd <a href="http://thkoch2001.github.io/whygitisbetter/">[3]</a>. As a bonus, it gives you 
+access to <a href="https://github.com/">the world's largest open source community</a>. 
+The learning curve is steep for some, not so much for others, but in the end 
+<a href="http://www.gitology.com/chapter/benefits-of-using-git">Git makes your life easier</a>.</p>
+<p>[3] <a href="http://thkoch2001.github.io/whygitisbetter/">Why Git is Better</a></p>
+<h2>SSH</h2>
+<p>Secure Shell (<a href="http://en.wikipedia.org/wiki/Secure_Shell">SSH</a>) is a network protocol for secure, <a href="http://en.wikipedia.org/wiki/Encryption">encrypted</a>, 
+communications between computers. In particular,
+it is used for data transfer, remote access, and remote command execution.
+For someone involved in computational science, it allows to connect to remote computers to extend
+storage capacity and computational power, wherever you are, no matter how fast your personal computer is. 
+Open source implementations like <a href="http://www.openssh.com/">OpenSSH</a> are available on all platforms. Imagine 
+controlling multi-million-dollar <a href="http://en.wikipedia.org/wiki/Supercomputer">supercomputers</a> with your smart phone <a href="http://www.techrepublic.com/article/easily-make-an-ssh-connection-from-your-android-device/">[4]</a>.</p>
+<p>[4] <a href="http://www.techrepublic.com/article/easily-make-an-ssh-connection-from-your-android-device/">Easily make an SSH connection from your Android device</a></p>
+  </article>
+</div>
+<aside class="sidebar">
+  <section>
+    <h1>Recent Posts</h1>
+    <ul id="recent_posts">
+      <li class="post">
+          <a href="/intro.html">Introduction</a>
+      </li>
+    </ul>
+  </section>
+  <section>
+      
+    <h1>Categories</h1>
+    <ul id="recent_posts">
+        <li><a href="/category/general.html">General</a></li>
+    </ul>
+  </section>
+ 
+
+  <section>
+  <h1>Tags</h1>
+    <a href="/tag/introduction.html">introduction</a>  </section>
+
+
+
+</aside>    </div>
+  </div>
+  <footer role="contentinfo"><p>
+    Copyright &copy;  2014  - Charles Varin 
+<!--   <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span> -->
+</p></footer>
+</body>
+</html>
