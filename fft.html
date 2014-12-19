@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Fast Fourier transform</title>
+  <meta name="author" content="Charles Varin">
+
+
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="http://cvarin.github.io/CSci-Survival-Guide/favicon.png" rel="shortcut icon">
+  <link href="http://cvarin.github.io/CSci-Survival-Guide/theme/css/main.css" media="screen, projection"
+        rel="stylesheet" type="text/css">
+  <script src="http://cvarin.github.io/CSci-Survival-Guide/theme/js/modernizr-2.0.js"></script>
+  <script src="http://cvarin.github.io/CSci-Survival-Guide/theme/js/ender.js"></script>
+  <script src="http://cvarin.github.io/CSci-Survival-Guide/theme/js/octopress.js" type="text/javascript"></script>
+
+  <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic"
+        rel="stylesheet" type="text/css">
+  <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic"
+        rel="stylesheet" type="text/css">
+</head>
+
+<body>
+  <header role="banner"><hgroup>
+  <h1><a href="http://cvarin.github.io/CSci-Survival-Guide/">The Computational Science Survival Guide</a></h1>
+    <h2>Free science with open source software</h2>
+</hgroup></header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+</ul>
+
+
+
+<ul class="main-navigation">
+    <li><a href="http://cvarin.github.io/CSci-Survival-Guide/archives.html">articles</a></li>
+    <li><a href="http://cvarin.github.io/CSci-Survival-Guide/pages/tools.html">tools</a></li>
+    <li><a href="http://cvarin.github.io/CSci-Survival-Guide/pages/infos.html">infos</a></li>
+
+</ul>
+
+<!-- http://www.w3schools.com/css/css_image_gallery.asp -->
+<ul class="img">
+     <a target="_blank" href="https://github.com/cvarin">
+          <img src="http://cvarin.github.io/CSci-Survival-Guide/images/github.png" alt="ka" height='34'>
+     </a>
+     <a target="_blank" href="http://www.mendeley.com/profiles/charles-varin/">
+          <img src="http://cvarin.github.io/CSci-Survival-Guide/images/mendeley.jpeg" alt="ka" height='34'>
+     </a>
+     <a target="_blank" href="http://ca.linkedin.com/pub/charles-varin/2a/175/390">
+          <img src="http://cvarin.github.io/CSci-Survival-Guide/images/linkedin.png" alt="ka" height='34'>
+     </a>
+     <a target="_blank" href="http://www.researchgate.net/profile/Charles_Varin">
+          <img src="http://cvarin.github.io/CSci-Survival-Guide/images/research_gate.jpeg" alt="ka" height='34'>
+     </a>
+     <a target="_blank" href="http://scholar.google.com/citations?user=yAdYdUAAAAAJ&hl=en">
+          <img src="http://cvarin.github.io/CSci-Survival-Guide/images/GoogleScholar_2.png" alt="ka" height='34'>
+     </a>
+</ul></nav>
+  <div id="main">
+    <div id="content">
+<div>
+  <article class="hentry" role="article">
+<header>
+      <h1 class="entry-title">Fast Fourier transform</h1>
+      <p class="meta"><time datetime="2014-12-18T20:45:00" pubdate>Thu 18 December 2014</time></p>
+</header>
+
+  <div class="entry-content"><p>As a first article in the CSSG series, I deal with the Fast Fourier Transform (FFT), in Python. In particular, I propose the simple example of a Gaussian wavepacket, whose analytical transform is known, to deduce the right normalization factor.</p>
+<h3>Python and the fast Fourier transform</h3>
+<p>The FFT is a special category of algorithms developed to compute the mathematical Fourier transform very quickly. We will not go into the details of the algorithm itself, but simply see how to use it, in Python. If you want to know more about how FFT works, see the <a href="http://en.wikipedia.org/wiki/Fast_Fourier_transform">Wikipedia article</a>.</p>
+<p>For example, if you have a time series <span class="math">\(E(t)\)</span>, you have access to its angular frequency content through the Fourier integral transform:</p>
+<p>
+<div class="math">$$
+E(\omega) = \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty}E(t)e^{i\omega t}dt
+$$</div>
+</p>
+<p>where <span class="math">\(i = \sqrt{-1}\)</span>. There is also the inverse Fourier transform:</p>
+<p>
+<div class="math">$$
+E(t) = \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty}E(\omega)e^{-i\omega t}dt
+$$</div>
+</p>
+<p>The FFT computes a discrete form of the Fourier transform, i.e., it approximates the integral by a sum. For example</p>
+<p>
+<div class="math">$$
+E_k = \sum_{n=0}^{N - 1}E_n e^{i2\pi k\frac{n}{N}}
+$$</div>
+</p>
+<p>you see immediately that there is a <span class="math">\(dt/\sqrt{2\pi}\)</span> missing. It must be added explicitly. </p>
+<p>In Python, FFT functions are available in the <a href="http://docs.scipy.org/doc/scipy-0.14.0/reference/fftpack.html">scipy.fftpack</a> module. You can import the functions you need by adding, for example, the following call to your Python script</p>
+<div class="highlight"><pre> <span class="n">from</span> <span class="n">scipy</span><span class="p">.</span><span class="n">fftpack</span> <span class="n">import</span> <span class="n">fft</span><span class="p">,</span><span class="n">ftshift</span><span class="p">,</span><span class="n">ifft</span><span class="p">,</span><span class="n">ifftshift</span>
+</pre></div>
+
+
+<p>This is what we will need later. But in the program I propose, it is automatically called by</p>
+<div class="highlight"><pre> <span class="n">from</span> <span class="n">pylab</span> <span class="n">import</span> <span class="o">*</span>
+</pre></div>
+
+
+<h3>Fourier transform of a Gaussian wavepacket</h3>
+<p>The Gaussian wavepacket is common in physics and chemistry. It is characterized by a function similar to this one:</p>
+<p>
+<div class="math">$$
+E(t)= E_0 \cos(\omega_0 t)e^{-t^2/T^2}
+$$</div>
+</p>
+<p>In complex notation:</p>
+<p>
+<div class="math">$$
+E(t)= E_0\left[\frac{e^{i\omega_0 t} + e^{-i\omega_0 t}}{2}\right]e^{-t^2/T^2}
+$$</div>
+</p>
+<p>The calculation of its Fourier transform is a bit lengthy so I give the final result only:</p>
+<p>
+<div class="math">$$
+E(\omega) = \frac{E_0 T}{2\sqrt{2}}\left[e^{-(\omega + \omega_0)^2 T^2/4} + e^{-(\omega - \omega_0)^2 T^2/4} \right]
+$$</div>
+</p>
+<p>In a moment, we will look at the spectral density</p>
+<p>
+<div class="math">$$
+|E(\omega)|^2 = E(\omega) E^*(\omega) = \left(\frac{E_0 T}{2\sqrt{2}}\right)^2\left[e^{-(\omega + \omega_0)^2 T^2/4} + e^{-(\omega - \omega_0)^2 T^2/4} \right]^2
+$$</div>
+</p>
+<p>This is the equation we will compare with the numerical Fourier transform, in a moment.</p>
+<h3>Python program</h3>
+<p>First of all, you can find the python program described below <a href="codes">here</a>, as <a href="codes/python_fast_fourier_transform.py">python_fast_fourier_transform.py</a>. We now explain what it does.</p>
+<p>The purpose of the following program is to perform the numerical Fourier transform of <span class="math">\(E(t)\)</span>, compute the power spectral density, and compare against the analytical form given above.</p>
+<p>First, it is convenient to define the following two functions that were defined earlier:</p>
+<div class="highlight"><pre> <span class="n">def</span> <span class="n">packet</span><span class="p">(</span><span class="n">E0</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">w0</span><span class="p">,</span><span class="n">T</span><span class="p">)</span><span class="o">:</span>
+      <span class="k">return</span> <span class="n">E0</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">w0</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">t</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">T</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+ <span class="n">def</span> <span class="n">packet_spectrum</span><span class="p">(</span><span class="n">E0</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">w0</span><span class="p">,</span><span class="n">T</span><span class="p">)</span><span class="o">:</span>
+      <span class="k">return</span> <span class="p">(</span><span class="n">E0</span><span class="o">*</span><span class="n">T</span><span class="o">/</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)))</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">w</span> <span class="o">-</span> <span class="n">w0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">T</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mf">4.0</span><span class="p">)</span> <span class="o">+</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">w</span> <span class="o">+</span> <span class="n">w0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">T</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mf">4.0</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span>
+</pre></div>
+
+
+<p>Then, we can readily see what the analytical signal and its spectrum looks like with the following piece of code:</p>
+<div class="highlight"><pre> <span class="n">from</span> <span class="n">pylab</span> <span class="n">import</span> <span class="o">*</span>
+ <span class="n">rcParams</span><span class="p">[</span><span class="err">&#39;</span><span class="n">axes</span><span class="p">.</span><span class="n">grid</span><span class="err">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">True</span>
+ <span class="n">rcParams</span><span class="p">[</span><span class="err">&#39;</span><span class="n">font</span><span class="p">.</span><span class="n">size</span><span class="err">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">14</span>
+ <span class="n">rcParams</span><span class="p">[</span><span class="err">&#39;</span><span class="n">axes</span><span class="p">.</span><span class="n">labelsize</span><span class="err">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">22</span>
+
+ <span class="n">E0</span> <span class="o">=</span> <span class="mf">1.0</span>
+ <span class="n">w0</span> <span class="o">=</span> <span class="mf">1.0</span>
+ <span class="n">T</span> <span class="o">=</span> <span class="mf">10.0</span>
+
+ <span class="err">###############################################################################</span>
+ <span class="err">#</span> <span class="n">time</span> <span class="n">axis</span>
+ <span class="n">n</span> <span class="o">=</span> <span class="mi">800</span>
+ <span class="n">t</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">150</span><span class="p">,</span><span class="mi">150</span><span class="p">,</span><span class="n">n</span><span class="p">)</span>
+ <span class="n">dt</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+ <span class="err">###############################################################################</span>
+ <span class="err">#</span> <span class="n">angular</span> <span class="n">frequency</span> <span class="n">axis</span>
+ <span class="n">dw</span> <span class="o">=</span> <span class="mf">2.0</span><span class="o">*</span><span class="n">pi</span><span class="o">/</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+ <span class="n">w</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">n</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">n</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">dw</span>
+
+ <span class="err">###############################################################################</span>
+ <span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figaspect</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span>
+
+ <span class="err">#</span> <span class="n">time</span> <span class="n">series</span>
+ <span class="n">subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">)</span>
+ <span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">packet</span><span class="p">(</span><span class="n">E0</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">w0</span><span class="p">,</span><span class="n">T</span><span class="p">))</span>
+ <span class="n">xlabel</span><span class="p">(</span><span class="n">r</span><span class="s">&quot;$t$&quot;</span><span class="p">)</span> 
+ <span class="n">ylabel</span><span class="p">(</span><span class="n">r</span><span class="s">&quot;$E(t)$&quot;</span><span class="p">)</span>
+ <span class="n">xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">30</span><span class="p">,</span><span class="mi">30</span><span class="p">)</span>
+
+ <span class="err">#</span> <span class="n">spectrum</span>
+ <span class="n">subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">)</span>
+ <span class="n">plot</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">packet_spectrum</span><span class="p">(</span><span class="n">E0</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">w0</span><span class="p">,</span><span class="n">T</span><span class="p">),</span><span class="sc">&#39;-&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="err">&#39;</span><span class="n">analytical</span><span class="err">&#39;</span><span class="p">)</span>
+ <span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+ <span class="n">xlabel</span><span class="p">(</span><span class="n">r</span><span class="s">&quot;$\omega$&quot;</span><span class="p">)</span> 
+ <span class="n">ylabel</span><span class="p">(</span><span class="n">r</span><span class="s">&quot;$|E(\omega)|^2$&quot;</span><span class="p">)</span>
+
+ <span class="n">tight_layout</span><span class="p">()</span>
+ <span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+
+<p>that gives</p>
+<p><img alt="Analytical forms" src="http://cvarin.github.io/CSci-Survival-Guide/images/python_fft_figure_1.png" /></p>
+<p>The fast fourier transform of the analytical wave packet is done by calling fft(), combined with fftshift(). The shift function is necessary to order the data array in the correct way. For example, the following lines</p>
+<div class="highlight"><pre> <span class="n">signal</span> <span class="o">=</span> <span class="n">packet</span><span class="p">(</span><span class="n">E0</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">w0</span><span class="p">,</span><span class="n">T</span><span class="p">)</span> 
+ <span class="n">trans</span> <span class="o">=</span> <span class="n">fftshift</span><span class="p">(</span><span class="n">fft</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span><span class="o">*</span><span class="n">dt</span><span class="o">/</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">pi</span><span class="p">)</span>
+ <span class="n">num_spec</span> <span class="o">=</span> <span class="n">abs</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+</pre></div>
+
+
+<p>give a spectrum that can be compared directly with packet_spectrum() [note the dt/sqrt(2.0*pi)]:</p>
+<p><img alt="Analytical forms" src="http://cvarin.github.io/CSci-Survival-Guide/images/python_fft_figure_2.png" /></p>
+<p>So it fits. </p>
+<p>For the inverse Fourier transform, the normalization factor is slightly different:</p>
+<div class="highlight"><pre> <span class="n">inv_trans</span> <span class="o">=</span> <span class="n">ifft</span><span class="p">(</span><span class="n">ifftshift</span><span class="p">(</span><span class="n">trans</span><span class="p">))</span><span class="o">*</span><span class="n">dw</span><span class="o">/</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="n">n</span>
+</pre></div>
+
+
+<p>Note the 'n' at the end. It is specific to the SciPy implementation of the FFT. Also, dw is used instead of dt because the inverse Fourier transform is an integral over the angular frequency. Finally, see that ifft() and ifftshift() are called, where the 'i' stands for 'inverse'. </p>
+<p>All that said, we can compare inv_trans to the initial signal:</p>
+<p><img alt="Analytical forms" src="http://cvarin.github.io/CSci-Survival-Guide/images/python_fft_figure_3.png" /></p>
+<p>And we see again that it fits.</p>
+<p>Summing up, we have seen how to perform fast Fourier transforms in Python, with the help of the fftpack module of the SciPy library. Most importantly, we have seen how to normalize the transform and the inverse transform to obtain results that are numerically correct.</p>
+<p><a href="codes/python_fast_fourier_transform.py">python_fast_fourier_transform.py</a></p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: 'center'," +
+        "    displayIndent: '0em'," +
+        "    showMathMenu: true," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'black ! important'} }" +
+        "    } " +
+        "}); ";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script></div>
+    <footer>
+<p class="meta">
+  <span class="byline author vcard">
+    Posted <!--by <span class="fn">Charles Varin</span>-->
+  </span>
+<time datetime="2014-12-18T20:45:00" pubdate>Thu 18 December 2014</time>  <span class="categories">
+    <a class="category" href="http://cvarin.github.io/CSci-Survival-Guide/category/python.html">Python</a>
+    <a class="category" href="http://cvarin.github.io/CSci-Survival-Guide/category/python.html">Python</a>
+  </span>
+  <span class="categories">
+     <a class="category" href="http://cvarin.github.io/CSci-Survival-Guide/tag/fft.html">FFT</a>
+     <a class="category" href="http://cvarin.github.io/CSci-Survival-Guide/tag/numerical-methods.html">numerical methods</a>
+  </span>
+</p><div class="sharing">
+</div>    </footer>
+  </article>
+
+</div>
+<aside class="sidebar">
+  <section>
+    <h1>Recent Posts</h1>
+    <ul id="recent_posts">
+      <li class="post">
+          <a href="http://cvarin.github.io/CSci-Survival-Guide/fft.html">Fast Fourier transform</a>
+      </li>
+      <li class="post">
+          <a href="http://cvarin.github.io/CSci-Survival-Guide/intro.html">Introduction</a>
+      </li>
+    </ul>
+  </section>
+  <section>
+      
+    <h1>Categories</h1>
+    <ul id="recent_posts">
+        <li><a href="http://cvarin.github.io/CSci-Survival-Guide/category/general.html">General</a></li>
+        <li><a href="http://cvarin.github.io/CSci-Survival-Guide/category/python.html">Python</a></li>
+    </ul>
+  </section>
+ 
+
+  <section>
+  <h1>Tags</h1>
+    <a href="http://cvarin.github.io/CSci-Survival-Guide/tag/introduction.html">introduction</a>,    <a href="http://cvarin.github.io/CSci-Survival-Guide/tag/fft.html">FFT</a>,    <a href="http://cvarin.github.io/CSci-Survival-Guide/tag/numerical-methods.html">numerical methods</a>  </section>
+
+
+
+</aside>    </div>
+  </div>
+  <footer role="contentinfo"><p>
+    Copyright &copy;  2014  - Charles Varin 
+<!--   <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span> -->
+</p></footer>
+</body>
+</html>

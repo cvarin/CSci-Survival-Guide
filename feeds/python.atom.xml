@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>The Computational Science Survival Guide</title><link href="http://cvarin.github.io/CSci-Survival-Guide/" rel="alternate"></link><link href="http://cvarin.github.io/CSci-Survival-Guide/feeds/all.atom.xml" rel="self"></link><id>http://cvarin.github.io/CSci-Survival-Guide/</id><updated>2014-12-18T20:45:00-05:00</updated><entry><title>Fast Fourier transform</title><link href="http://cvarin.github.io/CSci-Survival-Guide/fft.html" rel="alternate"></link><updated>2014-12-18T20:45:00-05:00</updated><author><name>Charles Varin</name></author><id>tag:cvarin.github.io/CSci-Survival-Guide,2014-12-18:fft.html</id><summary type="html">&lt;p&gt;As a first article in the CSSG series, I deal with the Fast Fourier Transform (FFT), in Python. In particular, I propose the simple example of a Gaussian wavepacket, whose analytical transform is known, to deduce the right normalization factor.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>The Computational Science Survival Guide</title><link href="http://cvarin.github.io/CSci-Survival-Guide/" rel="alternate"></link><link href="http://cvarin.github.io/CSci-Survival-Guide/feeds/python.atom.xml" rel="self"></link><id>http://cvarin.github.io/CSci-Survival-Guide/</id><updated>2014-12-18T20:45:00-05:00</updated><entry><title>Fast Fourier transform</title><link href="http://cvarin.github.io/CSci-Survival-Guide/fft.html" rel="alternate"></link><updated>2014-12-18T20:45:00-05:00</updated><author><name>Charles Varin</name></author><id>tag:cvarin.github.io/CSci-Survival-Guide,2014-12-18:fft.html</id><summary type="html">&lt;p&gt;As a first article in the CSSG series, I deal with the Fast Fourier Transform (FFT), in Python. In particular, I propose the simple example of a Gaussian wavepacket, whose analytical transform is known, to deduce the right normalization factor.&lt;/p&gt;
 &lt;h3&gt;Python and the fast Fourier transform&lt;/h3&gt;
 &lt;p&gt;The FFT is a special category of algorithms developed to compute the mathematical Fourier transform very quickly. We will not go into the details of the algorithm itself, but simply see how to use it, in Python. If you want to know more about how FFT works, see the &lt;a href="http://en.wikipedia.org/wiki/Fast_Fourier_transform"&gt;Wikipedia article&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;For example, if you have a time series &lt;span class="math"&gt;\(E(t)\)&lt;/span&gt;, you have access to its angular frequency content through the Fourier integral transform:&lt;/p&gt;
@@ -161,13 +161,4 @@ $$&lt;/div&gt;
         "}); ";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;</summary><category term="FFT"></category><category term="numerical methods"></category></entry><entry><title>Introduction</title><link href="http://cvarin.github.io/CSci-Survival-Guide/intro.html" rel="alternate"></link><updated>2014-11-13T00:00:00-05:00</updated><author><name>Charles Varin</name></author><id>tag:cvarin.github.io/CSci-Survival-Guide,2014-11-13:intro.html</id><summary type="html">&lt;p&gt;If you end up here, you are probably involved with computer simulations 
-of some sort. If you are about to spend hours in front of a computer, why not making it
-enjoyable? Why not getting rid of expensive, overkill, licensed software you do not need? 
-You will see, working with open source software makes it nice, whith the feeling that you are in control 
-of what you are doing.&lt;/p&gt;
-&lt;p&gt;In this guide, I share my survival tricks: simple methods and techniques that you can 
-always rely on. Of course, there are situations where more complex approaches are needed.
-But when in doubt, you still have these simple codes you know and understand very well,
-to compare and make sure everything is right.&lt;/p&gt;
-&lt;p&gt;I hope you will find the upcoming articles interesting and useful!&lt;/p&gt;</summary><category term="introduction"></category></entry></feed>
+&lt;/script&gt;</summary><category term="FFT"></category><category term="numerical methods"></category></entry></feed>
