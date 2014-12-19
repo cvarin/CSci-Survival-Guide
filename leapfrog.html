@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Leapfrog integration</title>
+  <meta name="author" content="Charles Varin">
+
+
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="http://cvarin.github.io/CSci-Survival-Guide/favicon.png" rel="shortcut icon">
+  <link href="http://cvarin.github.io/CSci-Survival-Guide/theme/css/main.css" media="screen, projection"
+        rel="stylesheet" type="text/css">
+  <script src="http://cvarin.github.io/CSci-Survival-Guide/theme/js/modernizr-2.0.js"></script>
+  <script src="http://cvarin.github.io/CSci-Survival-Guide/theme/js/ender.js"></script>
+  <script src="http://cvarin.github.io/CSci-Survival-Guide/theme/js/octopress.js" type="text/javascript"></script>
+
+  <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic"
+        rel="stylesheet" type="text/css">
+  <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic"
+        rel="stylesheet" type="text/css">
+</head>
+
+<body>
+  <header role="banner"><hgroup>
+  <h1><a href="http://cvarin.github.io/CSci-Survival-Guide/">The Computational Science Survival Guide</a></h1>
+    <h2>Free science with open source software</h2>
+</hgroup></header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+</ul>
+
+
+
+<ul class="main-navigation">
+    <li><a href="http://cvarin.github.io/CSci-Survival-Guide/archives.html">articles</a></li>
+    <li><a href="http://cvarin.github.io/CSci-Survival-Guide/pages/tools.html">tools</a></li>
+    <li><a href="http://cvarin.github.io/CSci-Survival-Guide/pages/infos.html">infos</a></li>
+
+</ul>
+
+<!-- http://www.w3schools.com/css/css_image_gallery.asp -->
+<ul class="img">
+     <a target="_blank" href="https://github.com/cvarin">
+          <img src="http://cvarin.github.io/CSci-Survival-Guide/images/github.png" alt="ka" height='34'>
+     </a>
+     <a target="_blank" href="http://www.mendeley.com/profiles/charles-varin/">
+          <img src="http://cvarin.github.io/CSci-Survival-Guide/images/mendeley.jpeg" alt="ka" height='34'>
+     </a>
+     <a target="_blank" href="http://ca.linkedin.com/pub/charles-varin/2a/175/390">
+          <img src="http://cvarin.github.io/CSci-Survival-Guide/images/linkedin.png" alt="ka" height='34'>
+     </a>
+     <a target="_blank" href="http://www.researchgate.net/profile/Charles_Varin">
+          <img src="http://cvarin.github.io/CSci-Survival-Guide/images/research_gate.jpeg" alt="ka" height='34'>
+     </a>
+     <a target="_blank" href="http://scholar.google.com/citations?user=yAdYdUAAAAAJ&hl=en">
+          <img src="http://cvarin.github.io/CSci-Survival-Guide/images/GoogleScholar_2.png" alt="ka" height='34'>
+     </a>
+</ul></nav>
+  <div id="main">
+    <div id="content">
+<div>
+  <article class="hentry" role="article">
+<header>
+      <h1 class="entry-title">Leapfrog integration</h1>
+      <p class="meta"><time datetime="2014-12-19T08:23:00" pubdate>Fri 19 December 2014</time></p>
+</header>
+
+  <div class="entry-content"><p><a href="http://en.wikipedia.org/wiki/Ordinary_differential_equation">Ordinary differential equations</a> are everywhere in science and engineering. Some have simple analytical solutions, some others don't and must be solved numerically. There exist several <a href="http://en.wikipedia.org/wiki/Numerical_methods_for_ordinary_differential_equations">methods to do it</a>. </p>
+<p>Scientific libraries in Matlab, Python, Fortran, C, ... have their own integrators and there is usually no need to code one. However, advanced integration techniques may be picky and it's always good to compare with a simple technique that you know well.</p>
+<p>The leapfrog technique is lightweight and very stable. In comparison, the popular <a href="http://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods">Runge-Kutta 4</a> is more accurate but produces a systematic error, leading to a long-term drift in the solution. As we will see, the energy error in the leapfrog scheme has no such long-term trend. </p>
+<p>In this paper, I show how to integrate Newton's equations of motion for the <a href="http://en.wikipedia.org/wiki/Harmonic_oscillator#Driven_harmonic_oscillators">driven harmonic oscillator</a> with the <a href="http://einstein.drexel.edu/courses/Comp_Phys/Integrators/leapfrog/">leapfrog technique</a>, in Python.</p>
+<h3>The driven harmonic oscillator</h3>
+<p>The driven harmonic oscillator is given by the following equation:</p>
+<p>
+<div class="math">$$
+\frac{d^2 x}{dt^2} + \gamma\frac{dx}{dt} + \omega_0^2x = \frac{F}{m}, \qquad (1)
+$$</div>
+where <span class="math">\(\gamma\)</span> is the damping constant, <span class="math">\(\omega_0 = \sqrt{k/m}\)</span> is the natural angular frequency, <span class="math">\(m\)</span> is the mass, and <span class="math">\(F\)</span> is the driving force. This second-order equation can also be written with two first-order equations:
+<div class="math">$$
+\frac{dx}{dt} = v \qquad\qquad\qquad\qquad\!\! (2)\\
+\frac{dv}{dt} = \frac{F}{m} - \gamma v -  \omega_0^2 x \qquad (3)
+$$</div>
+which is the form we will use for the numerical integration.</p>
+<p>The energy of the harmonic oscillator is:</p>
+<p>
+<div class="math">$$
+E = \frac{1}{2}mv^2 + \frac{1}{2}k x^2, \qquad (4)
+$$</div>
+</p>
+<p>where, I recall, <span class="math">\(k = m\omega_0^2\)</span>.</p>
+<h3>Leapfrog formulation</h3>
+<p>Leapfrog integration is a particular approach to write two coupled first-order ordinary differential equations with finite differences. For example, I can write:</p>
+<p>
+<div class="math">$$
+\frac{x_{n + 1} - x_{n}}{\Delta t} = v_{n + 1/2} \quad\Rightarrow\quad x_{n + 1} =  x_{n} + v_{n + 1/2}\Delta t \qquad (5)
+$$</div>
+which is mathematically exact in the limit where <span class="math">\(\Delta t \rightarrow 0\)</span>. The indices indicate that <span class="math">\(x\)</span> is sampled at integral time points, e.g., at <span class="math">\(t = 0, \Delta t, 2\Delta t,\ldots n\Delta t\)</span>, whereas <span class="math">\(v\)</span> is sampled in between, i.e., at <span class="math">\(t = \frac{1}{2}\Delta t, \frac{3}{2}\Delta t,\ldots \frac{n}{2}\Delta t\)</span>. So when going forward in time, <span class="math">\(x\)</span> "jumps" over <span class="math">\(v\)</span>, like in the <a href="http://www.merriam-webster.com/dictionary/leapfrog">children's game</a>. This is shown graphically below (<a href="http://einstein.drexel.edu/courses/Comp_Phys/Integrators/leapfrog/">source</a>).</p>
+<p><img alt="leapfrog" src="http://cvarin.github.io/CSci-Survival-Guide/images/leapfrog.gif" /></p>
+<p>We can do the same thing to equation (3) above:</p>
+<p>
+<div class="math">$$
+\frac{v_{n + 1/2} - v_{n - 1/2}}{\Delta t} = \frac{F_n}{m} - \gamma \frac{v_{n + 1/2} + v_{n - 1/2}}{2} - \omega_0^2 x_n \qquad \\
+\Downarrow \qquad \\
+v_{n + 1/2} = \frac{\left(1-\frac{\gamma\Delta t}{2}\right)}{
+\left(1 + \frac{\gamma\Delta t}{2}\right)}v_{n - 1/2} + \frac{\Delta t}{m
+\left(1 + \frac{\gamma\Delta t}{2}\right)}F_n - \frac{\omega_0^2\Delta t}{
+\left(1 + \frac{\gamma\Delta t}{2}\right)}\,x_n \qquad (6)
+$$</div>
+</p>
+<p>The equation here is a bit more complex, but perfectly good for a fully explicit numerical integration of equation (1). </p>
+<h3>Python program</h3>
+<p>The Python program for the integration of the harmonic oscillator equation (1), using the leapfrog equations (5) and (6) is <a href="codes/harmonic_oscillator_leapfrog.py">harmonic_oscillator_leapfrog.py</a>. To make things simple, I use <span class="math">\(m = 1\)</span> and <span class="math">\(k = 1\)</span>. We go through it now.</p>
+<p>For the moment, we work without a force, i.e., <span class="math">\(F = 0\)</span>. As you see below, integration is fairly simple:</p>
+<div class="highlight"><pre>     <span class="kn">from</span> <span class="nn">pylab</span> <span class="kn">import</span> <span class="o">*</span>
+
+     <span class="c">###############################################################################</span>
+     <span class="n">N</span> <span class="o">=</span> <span class="mi">10000</span>
+     <span class="n">t</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">300</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
+     <span class="n">dt</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+     <span class="c">###############################################################################</span>
+     <span class="c"># integration function</span>
+     <span class="k">def</span> <span class="nf">integrate</span><span class="p">(</span><span class="n">F</span><span class="p">,</span><span class="n">x0</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">gamma</span><span class="p">):</span>
+          <span class="c">###########################################################################</span>
+          <span class="c"># arrays are allocated and filled with zeros</span>
+          <span class="n">x</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+          <span class="n">v</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+          <span class="n">E</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>    
+
+          <span class="c">###########################################################################    </span>
+          <span class="c"># initial conditions</span>
+          <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">x0</span>
+          <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">v0</span>
+
+          <span class="c">###########################################################################</span>
+          <span class="c"># integration</span>
+          <span class="n">fac1</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">gamma</span><span class="o">*</span><span class="n">dt</span>
+          <span class="n">fac2</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">gamma</span><span class="o">*</span><span class="n">dt</span><span class="p">)</span>
+
+          <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+               <span class="n">v</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">fac1</span><span class="o">*</span><span class="n">fac2</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">fac2</span><span class="o">*</span><span class="n">dt</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">fac2</span><span class="o">*</span><span class="n">dt</span><span class="o">*</span><span class="n">F</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+               <span class="n">x</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">dt</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+               <span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">((</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+          <span class="n">E</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+          <span class="c">###########################################################################</span>
+          <span class="c"># return solution</span>
+          <span class="k">return</span> <span class="n">x</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">E</span>
+</pre></div>
+
+
+<p>This piece of code actually doesn't solve anything, yet. I created the function "integrate(F,x0,v0,gamma)", to make it easy solving the problem with different parameters and compare them. For example:</p>
+<div class="highlight"><pre>     <span class="c">###############################################################################</span>
+     <span class="c"># numerical integration</span>
+     <span class="n">F</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+     <span class="n">x1</span><span class="p">,</span><span class="n">v1</span><span class="p">,</span><span class="n">E1</span> <span class="o">=</span> <span class="n">integrate</span><span class="p">(</span><span class="n">F</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">)</span> <span class="c"># x0 = 0.0, v0 = 1.0, gamma = 0.0</span>
+     <span class="n">x2</span><span class="p">,</span><span class="n">v2</span><span class="p">,</span><span class="n">E2</span> <span class="o">=</span> <span class="n">integrate</span><span class="p">(</span><span class="n">F</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.05</span><span class="p">)</span> <span class="c"># x0 = 0.0, v0 = 1.0, gamma = 0.01</span>
+     <span class="n">x3</span><span class="p">,</span><span class="n">v3</span><span class="p">,</span><span class="n">E3</span> <span class="o">=</span> <span class="n">integrate</span><span class="p">(</span><span class="n">F</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.4</span><span class="p">)</span> <span class="c"># x0 = 0.0, v0 = 1.0, gamma = 0.5</span>
+</pre></div>
+
+
+<p>When plotted, it gives (see <a href="codes/harmonic_oscillator_leapfrog.py">code</a> for details):</p>
+<p><img alt="leapfrog fig 1" src="http://cvarin.github.io/CSci-Survival-Guide/images/python_leapfrog_figure_1.png" /></p>
+<p>So we see that without damping (<span class="math">\(\gamma = 0\)</span>), energy is conserved. With damping (<span class="math">\(\gamma \neq 0\)</span>), the energy drops, faster for a higher value of <span class="math">\(\gamma\)</span>, as expected. The oscillations in the energy might look weird but think about it a moment. Energy loss is associated with the damping force, proportional to <span class="math">\(v\)</span>. If <span class="math">\(v\)</span> oscillates, there is periodically a certain time lapse where it is zero or close to it. In this interval of time, damping is absent and energy is constant.</p>
+<p>To add a driving force, I recycle the function packet() from the <a href="fft.html">Fast Fourier transform</a> article, that I renamed force() to fit in the actual context:</p>
+<div class="highlight"><pre>     <span class="k">def</span> <span class="nf">force</span><span class="p">(</span><span class="n">f0</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">T</span><span class="p">):</span>
+          <span class="k">return</span> <span class="n">f0</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">w</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">t</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">T</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> 
+</pre></div>
+
+
+<p>Then I tried three cases were forces had the same amplitude and duration, but with different frequencies: <span class="math">\(\omega_0\)</span>, 0.9<span class="math">\(\omega_0\)</span>, and 0.8<span class="math">\(\omega_0\)</span>, <span class="math">\(\omega\)</span>:</p>
+<div class="highlight"><pre>     <span class="n">F1</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+     <span class="n">F2</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+     <span class="n">F3</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+          <span class="n">F1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">force</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mf">20.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">10.0</span><span class="p">)</span>
+          <span class="n">F2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">force</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mf">20.0</span><span class="p">,</span><span class="mf">0.9</span><span class="p">,</span><span class="mf">10.0</span><span class="p">)</span>
+          <span class="n">F3</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">force</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mf">20.0</span><span class="p">,</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">10.0</span><span class="p">)</span>
+
+     <span class="n">x1</span><span class="p">,</span><span class="n">v1</span><span class="p">,</span><span class="n">E1</span> <span class="o">=</span> <span class="n">integrate</span><span class="p">(</span><span class="n">F1</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">)</span>
+     <span class="n">x2</span><span class="p">,</span><span class="n">v2</span><span class="p">,</span><span class="n">E2</span> <span class="o">=</span> <span class="n">integrate</span><span class="p">(</span><span class="n">F2</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">)</span>
+     <span class="n">x3</span><span class="p">,</span><span class="n">v3</span><span class="p">,</span><span class="n">E3</span> <span class="o">=</span> <span class="n">integrate</span><span class="p">(</span><span class="n">F3</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">)</span>
+</pre></div>
+
+
+<p>It gives (see <a href="codes/harmonic_oscillator_leapfrog.py">code</a> for details):</p>
+<p><img alt="leapfrog fig 2" src="http://cvarin.github.io/CSci-Survival-Guide/images/python_leapfrog_figure_2.png" /></p>
+<p>So we see that an oscillator driven close to its natural frequency <span class="math">\(\omega_0\)</span> gains energy from the driving force, as expected. Damping was neglected (<span class="math">\(\gamma = 0\)</span>). If we add it and drive three different oscillators with the same force:</p>
+<div class="highlight"><pre>     <span class="n">x1</span><span class="p">,</span><span class="n">v1</span><span class="p">,</span><span class="n">E1</span> <span class="o">=</span> <span class="n">integrate</span><span class="p">(</span><span class="n">F1</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">)</span>
+     <span class="n">x2</span><span class="p">,</span><span class="n">v2</span><span class="p">,</span><span class="n">E2</span> <span class="o">=</span> <span class="n">integrate</span><span class="p">(</span><span class="n">F1</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.01</span><span class="p">)</span>
+     <span class="n">x3</span><span class="p">,</span><span class="n">v3</span><span class="p">,</span><span class="n">E3</span> <span class="o">=</span> <span class="n">integrate</span><span class="p">(</span><span class="n">F1</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+
+
+<p>then you see, below, that the oscillators gain energy, but also loose some due to damping. When damping is strong, energy is lost almost immediately after the driving force stops.</p>
+<p><img alt="leapfrog fig 3" src="http://cvarin.github.io/CSci-Survival-Guide/images/python_leapfrog_figure_3.png" /></p>
+<p>Well it happens that the driven harmonic oscillator (with damping) is a simple equation that is widely used to model how light interacts with atoms <a href="http://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-007-electromagnetic-energy-from-motors-to-lasers-spring-2011/readings/MIT6_007S11_lorentz.pdf">see this reference, for example</a>. I even got myself interested on improvements to reproduce some quantum mechanical behaviors of atoms in strong light fields for modeling nonlinear optics (<a href="http://arxiv.org/abs/1412.4748">see here</a>).</p>
+<p>I let you now explore with your new tool.</p>
+<p><a href="codes/harmonic_oscillator_leapfrog.py">harmonic_oscillator_leapfrog.py</a></p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: 'center'," +
+        "    displayIndent: '0em'," +
+        "    showMathMenu: true," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'black ! important'} }" +
+        "    } " +
+        "}); ";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script></div>
+    <footer>
+<p class="meta">
+  <span class="byline author vcard">
+    Posted <!--by <span class="fn">Charles Varin</span>-->
+  </span>
+<time datetime="2014-12-19T08:23:00" pubdate>Fri 19 December 2014</time>  <span class="categories">
+    <a class="category" href="http://cvarin.github.io/CSci-Survival-Guide/category/python.html">Python</a>
+    <a class="category" href="http://cvarin.github.io/CSci-Survival-Guide/category/python.html">Python</a>
+  </span>
+  <span class="categories">
+     <a class="category" href="http://cvarin.github.io/CSci-Survival-Guide/tag/numerical-methods.html">numerical methods</a>
+     <a class="category" href="http://cvarin.github.io/CSci-Survival-Guide/tag/finite-differences.html">finite differences</a>
+  </span>
+</p><div class="sharing">
+</div>    </footer>
+  </article>
+
+</div>
+<aside class="sidebar">
+  <section>
+    <h1>Recent Posts</h1>
+    <ul id="recent_posts">
+      <li class="post">
+          <a href="http://cvarin.github.io/CSci-Survival-Guide/leapfrog.html">Leapfrog integration</a>
+      </li>
+      <li class="post">
+          <a href="http://cvarin.github.io/CSci-Survival-Guide/fft.html">Fast Fourier transform</a>
+      </li>
+      <li class="post">
+          <a href="http://cvarin.github.io/CSci-Survival-Guide/intro.html">Introduction</a>
+      </li>
+    </ul>
+  </section>
+  <section>
+      
+    <h1>Categories</h1>
+    <ul id="recent_posts">
+        <li><a href="http://cvarin.github.io/CSci-Survival-Guide/category/general.html">General</a></li>
+        <li><a href="http://cvarin.github.io/CSci-Survival-Guide/category/python.html">Python</a></li>
+    </ul>
+  </section>
+ 
+
+  <section>
+  <h1>Tags</h1>
+    <a href="http://cvarin.github.io/CSci-Survival-Guide/tag/introduction.html">introduction</a>,    <a href="http://cvarin.github.io/CSci-Survival-Guide/tag/fft.html">FFT</a>,    <a href="http://cvarin.github.io/CSci-Survival-Guide/tag/finite-differences.html">finite differences</a>,    <a href="http://cvarin.github.io/CSci-Survival-Guide/tag/numerical-methods.html">numerical methods</a>  </section>
+
+
+
+</aside>    </div>
+  </div>
+  <footer role="contentinfo"><p>
+    Copyright &copy;  2014  - Charles Varin 
+<!--   <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span> -->
+</p></footer>
+</body>
+</html>
