@@ -58,7 +58,7 @@ $$&lt;/div&gt;
 &lt;/p&gt;
 &lt;p&gt;This is the equation we will compare with the numerical Fourier transform, in a moment.&lt;/p&gt;
 &lt;h3&gt;Python program&lt;/h3&gt;
-&lt;p&gt;First of all, you can find the python program described below &lt;a href="codes"&gt;here&lt;/a&gt;, as &lt;a href="codes/python_fast_fourier_transform.py"&gt;python_fast_fourier_transform.py&lt;/a&gt;. We now explain what it does.&lt;/p&gt;
+&lt;p&gt;First of all, the Python program described below: &lt;a href="codes/python_fast_fourier_transform.py"&gt;python_fast_fourier_transform.py&lt;/a&gt;. We now explain what it does.&lt;/p&gt;
 &lt;p&gt;The purpose of the following program is to perform the numerical Fourier transform of &lt;span class="math"&gt;\(E(t)\)&lt;/span&gt;, compute the power spectral density, and compare against the analytical form given above.&lt;/p&gt;
 &lt;p&gt;First, it is convenient to define the following two functions that were defined earlier:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt; &lt;span class="n"&gt;def&lt;/span&gt; &lt;span class="n"&gt;packet&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;E0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;w0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;T&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
